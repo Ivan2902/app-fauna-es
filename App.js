@@ -1,107 +1,68 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { ScrollView, StyleSheet } from 'react-native';
+import Header from './components/Header';
+import MainBanner from './components/MainBanner';
+import AlertSection from './components/AlertSection';
+import InstitutionsSection from './components/InstitutionsSection';
+import Footer from './components/Footer';
+import HomeScreen from './home';
+import RegisterScreen from './registro';
+import PasswordRecovery from './PasswordRecovery';
+import AboutScreen from './AboutScreen'; // Importar la nueva pantalla "Acerca de"
+
+const Stack = createStackNavigator();
+
+function AppContent() {
+  return (
+    <ScrollView style={styles.container}>
+      <Header />
+      <MainBanner />
+      <AlertSection />
+      <InstitutionsSection />
+      <Footer />
+    </ScrollView>
+  );
+}
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <ImageBackground 
-        source={{ uri: 'https://your-image-url-here' }}
-        style={styles.background}
-        resizeMode="cover"
-      >
-        <View style={styles.header}>
-          <Text style={styles.menuText}>Explorar</Text>
-          <Text style={styles.menuText}>Acerca de</Text>
-          <Text style={styles.menuText}>Iniciar sesión</Text>
-        </View>
-        
-        <View style={styles.loginContainer}>
-          <Text style={styles.title}>Inicio de Sesión</Text>
-          <TextInput 
-            placeholder="Usuario" 
-            placeholderTextColor="#fff" 
-            style={styles.input} 
-          />
-          <TextInput 
-            placeholder="Correo" 
-            placeholderTextColor="#fff" 
-            style={styles.input} 
-          />
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Registrarse</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Regiones</Text>
-          <Text style={styles.footerText}>Ayuda</Text>
-          <Text style={styles.footerText}>Contactos</Text>
-        </View>
-        
-      </ImageBackground>
-      <StatusBar style="light" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="AppContent">
+        <Stack.Screen 
+          name="AppContent" 
+          component={AppContent} 
+          options={{ title: 'Fauna' }} 
+        />
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{ title: 'Inicio de Sesión' }} 
+        />
+        <Stack.Screen 
+          name="Register" 
+          component={RegisterScreen} 
+          options={{ title: 'Registro' }} 
+        />
+        <Stack.Screen 
+          name="PasswordRecovery" 
+          component={PasswordRecovery} 
+          options={{ title: 'Recuperar Contraseña' }}
+        />
+        <Stack.Screen 
+          name="About" 
+          component={AboutScreen} // Agregar la nueva pantalla "Acerca de"
+          options={{ title: 'Acerca de' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  background: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 40,
-  },
-  menuText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  loginContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 20,
-    marginHorizontal: 20,
-    borderRadius: 10,
-  },
-  title: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    color: '#fff',
-  },
-  button: {
-    backgroundColor: '#d2a679',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 20,
-    backgroundColor: '#540b0e',
-  },
-  footerText: {
-    color: '#fff',
-    fontSize: 16,
+    backgroundColor: '#f5f5f5', // Color de fondo principal de la app
   },
 });
