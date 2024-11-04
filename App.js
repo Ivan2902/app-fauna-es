@@ -10,7 +10,8 @@ import Footer from './components/Footer';
 import HomeScreen from './home';
 import RegisterScreen from './registro';
 import PasswordRecovery from './PasswordRecovery';
-import AboutScreen from './AboutScreen'; // Importar la nueva pantalla "Acerca de"
+import AboutScreen from './AboutScreen';
+import DataScreen from './DataScreen'; // Importar la pantalla para mostrar datos
 
 const Stack = createStackNavigator();
 
@@ -52,8 +53,13 @@ export default function App() {
         />
         <Stack.Screen 
           name="About" 
-          component={AboutScreen} // Agregar la nueva pantalla "Acerca de"
+          component={AboutScreen} 
           options={{ title: 'Acerca de' }}
+        />
+        <Stack.Screen 
+          name="Data" 
+          component={DataScreen} // Agregar la pantalla "Datos"
+          options={{ title: 'Datos' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -63,6 +69,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5', // Color de fondo principal de la app
+    backgroundColor: '#f5f5f5',
   },
 });
