@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 
-const DataScreen = () => {
+const DataScreen = ({ navigation }) => {
   const [datos, setDatos] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.137.1:3000/datos');
+        const response = await fetch('http://192.168.1.128:3000/datos');
 
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.status}`);
@@ -38,16 +38,16 @@ const DataScreen = () => {
             resizeMode="cover"
             onError={(e) => console.log('Error cargando imagen:', e.nativeEvent.error)}
           />
-          <Text style={styles.text}>Nombre Común: {item.nombre_comun}</Text>
+          <Text style={styles.textTitle}>Nombre Común: {item.nombre_comun}</Text>
           <Text style={styles.text}>Nombre Científico: {item.nombre_cientifico}</Text>
           <Text style={styles.text}>Dieta: {item.desc_dieta}</Text>
           <Text style={styles.text}>Estado de Conservación: {item.desc_estado}</Text>
           <Text style={styles.text}>Bandera: {item.desc_bandera}</Text>
 
-          {/* Botón personalizado */}
+          {/* Botón para ver detalles */}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => console.log(`Ver detalles de: ${item.nombre_comun}`)}
+            onPress={() => navigation.navigate('DetailScreen', { item })}
           >
             <Text style={styles.buttonText}>Ver</Text>
           </TouchableOpacity>
@@ -60,52 +60,62 @@ const DataScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     padding: 10,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#333',
     textAlign: 'center',
+    marginVertical: 10,
+  },
+  error: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   itemContainer: {
-    marginBottom: 20,
-    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 8,
-    backgroundColor: '#8B0000',
   },
   image: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 10,
+  },
+  textTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#8B0000',
+    textAlign: 'center',
+    marginBottom: 5,
   },
   text: {
     fontSize: 16,
-    marginBottom: 5,
-    color: '#f5f5f5',
-  },
-  error: {
-    color: 'red',
-    fontSize: 18,
+    color: '#555',
     textAlign: 'center',
+    marginBottom: 5,
   },
   button: {
-    backgroundColor: '#fff',
+    backgroundColor: '#8B0000',
     paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#8B0000',
-    alignItems: 'center',
+    alignSelf: 'center',
     marginTop: 10,
   },
   buttonText: {
-    color: '#8B0000',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

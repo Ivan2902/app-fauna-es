@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScrollView, StyleSheet } from 'react-native';
@@ -12,6 +12,7 @@ import RegisterScreen from './registro';
 import PasswordRecovery from './PasswordRecovery';
 import AboutScreen from './AboutScreen';
 import DataScreen from './DataScreen'; // Importar la pantalla para mostrar datos
+import DetailScreen from './DetailScreen'; // Importar la pantalla de detalles
 
 const Stack = createStackNavigator();
 
@@ -58,8 +59,13 @@ export default function App() {
         />
         <Stack.Screen 
           name="Data" 
-          component={DataScreen} // Agregar la pantalla "Datos"
+          component={DataScreen} 
           options={{ title: 'Datos' }}
+        />
+        <Stack.Screen 
+          name="DetailScreen" 
+          component={DetailScreen} 
+          options={{ title: 'Detalles de la Especie' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
