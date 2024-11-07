@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions, Alert } from 'react-native';
 
-const { width, height } = Dimensions.get('window'); // Para obtener las dimensiones de la pantalla
+const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://192.168.137.1:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Éxito', 'Inicio de sesión exitoso');
+        navigation.navigate('MainScreen'); // Cambia 'MainScreen' por la pantalla de destino
+      } else {
+        Alert.alert('Error', data.error);
+      }
+    } catch (error) {
+      console.error('Error en el inicio de sesión:', error);
+      Alert.alert('Error', 'Error al conectar con el servidor');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground 
@@ -12,22 +37,26 @@ export default function HomeScreen({ navigation }) {
         style={styles.background}
         resizeMode="cover"
       >
-        {/* Formulario de inicio de sesión */}
         <View style={styles.centerContainer}>
           <View style={styles.loginContainer}>
             <Text style={styles.title}>Inicio de Sesión</Text>
             <TextInput 
-              placeholder="Usuario" 
+              placeholder="Correo" 
               placeholderTextColor="#000" 
               style={styles.inputWhite}
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
             />
             <TextInput 
               placeholder="Contraseña" 
               placeholderTextColor="#000" 
               style={styles.inputWhite}
               secureTextEntry={true}
+              value={password}
+              onChangeText={setPassword}
             />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Acceder</Text>
             </TouchableOpacity>
 
@@ -64,53 +93,12 @@ const styles = StyleSheet.create({
   background: { flex: 1, width: '100%', height: '100%' },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   loginContainer: { backgroundColor: 'rgba(0, 0, 0, 0.6)', padding: 20, width: '80%', borderRadius: 10 },
-  title: { 
-    color: '#fff', 
-    fontSize: 24, 
-    fontWeight: 'bold', 
-    marginBottom: 20, 
-    textAlign: 'center' 
-  },
-  inputWhite: { 
-    backgroundColor: '#fff', 
-    color: '#333', 
-    borderWidth: 1, 
-    borderColor: '#fff', 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 15 
-  },
-  button: { 
-    backgroundColor: '#d2a679', 
-    padding: 15, 
-    borderRadius: 5, 
-    alignItems: 'center' 
-  },
-  buttonText: { 
-    color: '#fff', 
-    fontSize: 18 
-  },
-  accountOptions: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    marginTop: 15 
-  },
-  optionText: { 
-    color: '#d2a679', 
-    fontSize: 16, 
-    textDecorationLine: 'underline' 
-  },
-  footer: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
-    paddingVertical: 20, 
-    backgroundColor: '#540b0e', 
-    position: 'absolute', 
-    bottom: 0, 
-    width: '100%' 
-  },
-  footerText: { 
-    color: '#fff', 
-    fontSize: 16 
-  },
+  title: { color: '#fff', fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  inputWhite: { backgroundColor: '#fff', color: '#333', borderWidth: 1, borderColor: '#fff', padding: 10, borderRadius: 5, marginBottom: 15 },
+  button: { backgroundColor: '#d2a679', padding: 15, borderRadius: 5, alignItems: 'center' },
+  buttonText: { color: '#fff', fontSize: 18 },
+  accountOptions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 },
+  optionText: { color: '#d2a679', fontSize: 16, textDecorationLine: 'underline' },
+  footer: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 20, backgroundColor: '#540b0e', position: 'absolute', bottom: 0, width: '100%' },
+  footerText: { color: '#fff', fontSize: 16 },
 });

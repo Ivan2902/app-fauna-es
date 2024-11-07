@@ -1,19 +1,21 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const bcrypt = require('bcryptjs'); // Para encriptar contraseñas
 
 const app = express();
-app.use(cors());  // Habilitar CORS para permitir solicitudes de dominios cruzados
+app.use(cors());  
+app.use(express.json());  // Middleware para manejar JSON
 
 // Configuración de la conexión a la base de datos MySQL
 const connection = mysql.createConnection({
-  host: '127.0.0.1', // Si el servidor de la base de datos está en la misma máquina que Node.js
-  user: 'root',      // Usuario de MySQL
-  password: '',      // Contraseña de MySQL
-  database: 'faunavb' // Nombre de la base de datos
+  host: '127.0.0.1',
+  user: 'root',
+  password: '',
+  database: 'faunavb'
 });
 
-// Establecer la conexión a la base de datos
+// Conectar a la base de datos
 connection.connect((err) => {
   if (err) {
     console.error('Error al conectar a la base de datos:', err);
@@ -22,23 +24,23 @@ connection.connect((err) => {
   console.log('Conectado a la base de datos MySQL');
 });
 
-// Ruta para obtener los datos de las especies para `DetailScreen`
+// Ruta para obtener datos de especies (no se modifica)
 app.get('/datos', (req, res) => {
   const query = `
     SELECT 
       e.nombre_comun, 
       e.nombre_cientifico, 
-      e.descripcion AS descripcion,         -- Cambiado para que coincida con "descripcion"
-      e.habitad AS habitat,                 -- Cambiado para que coincida con "habitat"
-      e.tamanio AS tamaño,                  -- Cambiado para que coincida con "tamaño"
-      f.desc_familia AS familia,            -- Cambiado para que coincida con "familia"
-      d.desc_dieta AS desc_dieta,           -- Cambiado para que coincida con "desc_dieta"
-      ec.desc_estado AS desc_estado,        -- Cambiado para que coincida con "desc_estado"
-      ent.desc_entorno AS entorno,          -- Cambiado para que coincida con "entorno"
-      b.desc_bandera AS desc_bandera,       -- Cambiado para que coincida con "desc_bandera"
-      g.desc_grupo AS grupo,                -- Cambiado para que coincida con "grupo"
-      m.multimedia AS multimedia,           -- Cambiado para que coincida con "multimedia"
-      GROUP_CONCAT(enf.nombre_enfermedad SEPARATOR ', ') AS enfermedades -- Listado de enfermedades
+      e.descripcion AS descripcion,         
+      e.habitad AS habitat,                 
+      e.tamanio AS tamaño,                  
+      f.desc_familia AS familia,            
+      d.desc_dieta AS desc_dieta,           
+      ec.desc_estado AS desc_estado,        
+      ent.desc_entorno AS entorno,          
+      b.desc_bandera AS desc_bandera,       
+      g.desc_grupo AS grupo,                
+      m.multimedia AS multimedia,           
+      GROUP_CONCAT(enf.nombre_enfermedad SEPARATOR ', ') AS enfermedades 
 
     FROM 
       especies e
@@ -67,7 +69,6 @@ app.get('/datos', (req, res) => {
       e.id_especie;
   `;
 
-  // Ejecutar la consulta SQL
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Error en la consulta SQL:', err);
@@ -75,6 +76,60 @@ app.get('/datos', (req, res) => {
       return;
     }
     res.json(results);
+  });
+});
+
+// Ruta para registrar un usuario
+app.post('/register', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
+    connection.query(query, [name, email, hashedPassword], (err, result) => {
+      if (err) {
+        console.error('Error al registrar usuario:', err);
+        return res.status(500).json({ error: 'Error al registrar usuario' });
+      }
+      res.status(201).json({ message: 'Usuario registrado con éxito' });
+    });
+  } catch (error) {
+    console.error('Error en el proceso de registro:', error);
+    res.status(500).json({ error: 'Error en el proceso de registro' });
+  }
+});
+
+// Ruta para iniciar sesión
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  const query = 'SELECT * FROM users WHERE email = ?';
+  connection.query(query, [email], async (err, results) => {
+    if (err) {
+      console.error('Error en la consulta SQL:', err);
+      return res.status(500).json({ error: 'Error en la consulta de la base de datos' });
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
+    }
+
+    const user = results[0];
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
+    }
+
+    res.json({ message: 'Inicio de sesión exitoso', user: { id: user.id, name: user.name, email: user.email } });
   });
 });
 
