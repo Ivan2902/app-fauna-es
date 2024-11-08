@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions, Alert, Modal } from 'react-native';
+import { useAuth } from './AuthContext';
+import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
+  const { login } = useAuth(); // Accede a la función `login` del contexto de autenticación
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false); // Estado para mostrar la animación de éxito
 
   const handleLogin = async () => {
     try {
@@ -19,8 +23,12 @@ export default function HomeScreen({ navigation }) {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Éxito', 'Inicio de sesión exitoso');
-        navigation.navigate('MainScreen'); // Cambia 'MainScreen' por la pantalla de destino
+        login(data.user); // Inicia sesión guardando los datos del usuario en el contexto
+        setShowSuccess(true); // Mostrar la animación de éxito
+        setTimeout(() => {
+          setShowSuccess(false); // Ocultar la animación después de 2 segundos
+          navigation.navigate('AppContent'); // Redirige a la pantalla principal después de iniciar sesión
+        }, 2000);
       } else {
         Alert.alert('Error', data.error);
       }
@@ -72,18 +80,33 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View style={styles.footer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('About')}>
             <Text style={styles.footerText}>Acerca de</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Help')}>
             <Text style={styles.footerText}>Ayuda</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
             <Text style={styles.footerText}>Contactos</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
+
       <StatusBar style="light" />
+
+      {/* Modal para mostrar la animación de éxito */}
+      {showSuccess && (
+        <Modal transparent={true} animationType="fade">
+          <View style={styles.animationContainer}>
+            <LottieView
+              source={require('./assets/success.json')}  // Ruta de tu animación de éxito
+              autoPlay
+              loop={false}
+              style={{ width: 150, height: 150 }}
+            />
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -101,4 +124,10 @@ const styles = StyleSheet.create({
   optionText: { color: '#d2a679', fontSize: 16, textDecorationLine: 'underline' },
   footer: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 20, backgroundColor: '#540b0e', position: 'absolute', bottom: 0, width: '100%' },
   footerText: { color: '#fff', fontSize: 16 },
+  animationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente
+  },
 });

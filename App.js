@@ -11,8 +11,9 @@ import HomeScreen from './home';
 import RegisterScreen from './registro';
 import PasswordRecovery from './PasswordRecovery';
 import AboutScreen from './AboutScreen';
-import DataScreen from './DataScreen'; // Importar la pantalla para mostrar datos
-import DetailScreen from './DetailScreen'; // Importar la pantalla de detalles
+import DataScreen from './DataScreen';
+import DetailScreen from './DetailScreen';
+import { AuthProvider } from './AuthContext';
 
 const Stack = createStackNavigator();
 
@@ -30,45 +31,47 @@ function AppContent() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="AppContent">
-        <Stack.Screen 
-          name="AppContent" 
-          component={AppContent} 
-          options={{ title: 'Fauna' }} 
-        />
-        <Stack.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{ title: 'Inicio de Sesión' }} 
-        />
-        <Stack.Screen 
-          name="Register" 
-          component={RegisterScreen} 
-          options={{ title: 'Registro' }} 
-        />
-        <Stack.Screen 
-          name="PasswordRecovery" 
-          component={PasswordRecovery} 
-          options={{ title: 'Recuperar Contraseña' }}
-        />
-        <Stack.Screen 
-          name="About" 
-          component={AboutScreen} 
-          options={{ title: 'Acerca de' }}
-        />
-        <Stack.Screen 
-          name="Data" 
-          component={DataScreen} 
-          options={{ title: 'Datos' }}
-        />
-        <Stack.Screen 
-          name="DetailScreen" 
-          component={DetailScreen} 
-          options={{ title: 'Detalles de la Especie' }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="AppContent">
+          <Stack.Screen 
+            name="AppContent" 
+            component={AppContent} 
+            options={{ title: 'Fauna' }} 
+          />
+          <Stack.Screen 
+            name="Home" 
+            component={HomeScreen} 
+            options={{ title: 'Inicio de Sesión' }} 
+          />
+          <Stack.Screen 
+            name="Register" 
+            component={RegisterScreen} 
+            options={{ title: 'Registro' }} 
+          />
+          <Stack.Screen 
+            name="PasswordRecovery" 
+            component={PasswordRecovery} 
+            options={{ title: 'Recuperar Contraseña' }}
+          />
+          <Stack.Screen 
+            name="About" 
+            component={AboutScreen} 
+            options={{ title: 'Acerca de' }}
+          />
+          <Stack.Screen 
+            name="Data" 
+            component={DataScreen} 
+            options={{ title: 'Datos' }}
+          />
+          <Stack.Screen 
+            name="DetailScreen" 
+            component={DetailScreen} 
+            options={{ title: 'Detalles de la Especie' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 
