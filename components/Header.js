@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../AuthContext';
+import { useAuth } from './AuthContext';
 
 const { width } = Dimensions.get('window');
 
@@ -46,8 +46,9 @@ const Header = () => {
                 onPress={() => setDropdownVisible(false)}
               >
                 <View style={styles.dropdown}>
+                  {/* Botón para ir a Publicaciones */}
                   <TouchableOpacity onPress={() => {
-                    navigation.navigate('AppContent');
+                    navigation.navigate('Publicaciones'); // Ruta añadida aquí
                     setDropdownVisible(false);
                   }}>
                     <Text style={styles.dropdownItem}>Publicaciones</Text>
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     backgroundColor: '#ffffff', // Fondo blanco del menú desplegable
-    borderRadius: 16,  // Bordes redondeados
+    borderRadius: 16, // Bordes redondeados
     paddingVertical: 15,
     paddingHorizontal: 20,
     shadowColor: '#000',

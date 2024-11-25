@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScrollView, StyleSheet } from 'react-native';
@@ -7,13 +7,14 @@ import MainBanner from './components/MainBanner';
 import AlertSection from './components/AlertSection';
 import InstitutionsSection from './components/InstitutionsSection';
 import Footer from './components/Footer';
-import HomeScreen from './home';
-import RegisterScreen from './registro';
-import PasswordRecovery from './PasswordRecovery';
-import AboutScreen from './AboutScreen';
-import DataScreen from './DataScreen';
-import DetailScreen from './DetailScreen';
-import { AuthProvider } from './AuthContext';
+import HomeScreen from './users/home';
+import RegisterScreen from './users/registro';
+import PasswordRecovery from './users/PasswordRecovery';
+import AboutScreen from './components/AboutScreen';
+import DataScreen from './data/DataScreen';
+import DetailScreen from './data/DetailScreen';
+import PublicacionesScreen from './publicaciones/PublicacionesScreen'; // Ajustado para la ruta correcta
+import { AuthProvider } from './components/AuthContext';
 
 const Stack = createStackNavigator();
 
@@ -68,6 +69,11 @@ export default function App() {
             name="DetailScreen" 
             component={DetailScreen} 
             options={{ title: 'Detalles de la Especie' }}
+          />
+          <Stack.Screen 
+            name="Publicaciones" 
+            component={PublicacionesScreen} 
+            options={{ title: 'Publicaciones' }} 
           />
         </Stack.Navigator>
       </NavigationContainer>

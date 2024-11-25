@@ -44,7 +44,7 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('./assets/liebre.jpg')} style={styles.background} resizeMode="cover">
+      <ImageBackground source={require('../assets/liebre.jpg')} style={styles.background} resizeMode="cover">
         <View style={styles.centerContainer}>
           <View style={styles.loginContainer}>
             <TextInput
@@ -91,7 +91,7 @@ export default function RegisterScreen({ navigation }) {
           <Modal transparent={true} animationType="fade">
             <View style={styles.animationContainer}>
               <LottieView
-                source={require('./assets/success.json')}  // Ruta de tu animación
+                source={require('../assets/success.json')}  // Ruta de tu animación
                 autoPlay
                 loop={false}
                 style={{ width: 150, height: 150 }}

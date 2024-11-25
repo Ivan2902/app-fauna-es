@@ -8,7 +8,7 @@ const PasswordRecovery = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"} // Para evitar que el teclado cubra la vista en iOS/Android
     >
       <ImageBackground
-        source={require('./assets/liebre.jpg')} // Cambia a la imagen de fondo que deseas usar
+        source={require('../assets/liebre.jpg')} // Cambia a la imagen de fondo que deseas usar
         style={styles.background}
       >
         <View style={styles.overlay}>

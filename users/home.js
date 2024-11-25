@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions, Alert, Modal } from 'react-native';
-import { useAuth } from './AuthContext';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions, Modal } from 'react-native';
+import { useAuth } from '../components/AuthContext';
 import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -11,6 +11,7 @@ export default function HomeScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showSuccess, setShowSuccess] = useState(false); // Estado para mostrar la animación de éxito
+  const [showFailure, setShowFailure] = useState(false); // Estado para mostrar la animación de error
 
   const handleLogin = async () => {
     try {
@@ -30,18 +31,24 @@ export default function HomeScreen({ navigation }) {
           navigation.navigate('AppContent'); // Redirige a la pantalla principal después de iniciar sesión
         }, 2000);
       } else {
-        Alert.alert('Error', data.error);
+        setShowFailure(true); // Mostrar la animación de error
+        setTimeout(() => {
+          setShowFailure(false); // Ocultar la animación después de 2 segundos
+        }, 2000);
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);
-      Alert.alert('Error', 'Error al conectar con el servidor');
+      setShowFailure(true); // Mostrar la animación de error
+      setTimeout(() => {
+        setShowFailure(false); // Ocultar la animación después de 2 segundos
+      }, 2000);
     }
   };
 
   return (
     <View style={styles.container}>
       <ImageBackground 
-        source={require('./assets/liebre.jpg')} 
+        source={require('../assets/liebre.jpg')} 
         style={styles.background}
         resizeMode="cover"
       >
@@ -99,7 +106,21 @@ export default function HomeScreen({ navigation }) {
         <Modal transparent={true} animationType="fade">
           <View style={styles.animationContainer}>
             <LottieView
-              source={require('./assets/success.json')}  // Ruta de tu animación de éxito
+              source={require('../assets/success.json')}  // Ruta de tu animación de éxito
+              autoPlay
+              loop={false}
+              style={{ width: 150, height: 150 }}
+            />
+          </View>
+        </Modal>
+      )}
+
+      {/* Modal para mostrar la animación de error */}
+      {showFailure && (
+        <Modal transparent={true} animationType="fade">
+          <View style={styles.animationContainer}>
+            <LottieView
+              source={require('../assets/success2.json')}  // Ruta de tu animación de error
               autoPlay
               loop={false}
               style={{ width: 150, height: 150 }}
